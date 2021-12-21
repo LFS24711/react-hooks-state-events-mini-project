@@ -8,38 +8,42 @@ import { CATEGORIES, TASKS } from "../data";
 // console.log({ CATEGORIES, TASKS });
 
 function App() {
-  let [idGen, setID] = useState(0);
-  const sTaskList = TASKS.map((a, i) => {
-    return {  
-      description: a.text,
-      category: a.category,
-      id: i,
-    }
-  });
-  const [tasks, setTasks] = useState([...sTaskList]);
-  const [categories, setCategories] = useState([...CATEGORIES])
-  // setTasks(sTaskList);
+ 
+  const [tasks, setTasks] = useState([...TASKS]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  
 
   function updateTaskList (newTaskList){
     setTasks([...newTaskList])
   }
 
+  function onTaskFormSubmit(newTask){
+
+    setTasks([...tasks, newTask])
+  };
+
+  function updateCat(newCat) {
+    setSelectedCategory(newCat);
+    console.log("Selected category: " + selectedCategory);
+  };
+
+  const filteredTasks = tasks.filter((task) => {
+    if (selectedCategory === "All" || selectedCategory === "")
+      return true;
+    return task.category === selectedCategory;
+  });
 
 
-console.log(tasks)
-
-
-
-
+console.log(tasks);
 
 
 
   return (
     <div className="App">
       <h2>My tasks</h2>
-      <CategoryFilter categories={categories}/>
-      <NewTaskForm categories={categories} updateTaskList={updateTaskList}/>
-      <TaskList tasks={tasks} updateTaskList={updateTaskList}/>
+      <CategoryFilter categories={CATEGORIES} updateCat = {updateCat} selectedCategory={selectedCategory}/>
+      <NewTaskForm categories={CATEGORIES} updateTaskList={updateTaskList} onTaskFormSubmit={onTaskFormSubmit}/>
+      <TaskList tasks={filteredTasks} updateTaskList={updateTaskList} selectedCategory={selectedCategory} />
     </div>
   );
 }
